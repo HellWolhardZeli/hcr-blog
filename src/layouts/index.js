@@ -119,3 +119,64 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withRoot(injectSheet(globals)(Layout)));
+
+//eslint-disable-next-line no-undef
+export const guery = graphql`
+  query LayoutQuery {
+    posts: allMarkdownRemark(
+      filter: { id: { regex: "//posts//" } }
+      sort: { fields: [fields___prefix], order: DESC }
+    ) {
+      edges {
+        node {
+          excerpt
+          fields {
+            slug
+            prefix
+          }
+          frontmatter {
+            title
+            subTitle
+            category
+            cover {
+              children {
+                ... on ImageSharp {
+                  resolutions(width: 90, height: 90) {
+                    ...GatsbyImageSharpResolutions_withWebp_noBase64
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    pages: allMarkdownRemark(
+      filter: { id: { regex: "//pages//" }, fields: { prefix: { regex: "/^\\d+$/" } } }
+      sort: { fields: [fields___prefix], order: ASC }
+    ) {
+      edges {
+        node {
+          fields {
+            slug
+            prefix
+          }
+          frontmatter {
+            title
+            menuTitle
+          }
+        }
+      }
+    }
+    parts: allMarkdownRemark(filter: { id: { regex: "//parts//" } }) {
+      edges {
+        node {
+          html
+          frontmatter {
+            title
+          }
+        }
+      }
+    }
+  }
+`;
